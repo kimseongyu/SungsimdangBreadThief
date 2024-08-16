@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입</title>
+    <link rel="stylesheet" href="../styles/styles.css">
+</head>
+<body>
+    <div class="form-container">
+        <h1>회원가입</h1>
+        <form id="signup-form">
+            <label for="email">이메일</label>
+            <input type="email" id="email" placeholder="이메일" required>
+            
+            <label for="password">비밀번호</label>
+            <input type="password" id="password" placeholder="비밀번호" required>
+
+            <label for="name">이름</label>
+            <input type="text" id="name" placeholder="이름" required>
+            
+            <label for="company">업체명</label>
+            <input type="text" id="company" placeholder="업체명" required>
+
+            <label for="location">위치</label>
+            <input type="text" id="location" placeholder="위치" required>
+
+            <label for="category">카테고리</label>
+            <input type="text" id="category" placeholder="ex) 음식점 / 대학" required>
+
+            <button type="submit">회원가입</button>
+        </form>
+    </div>
+
+    <script src="../js/signup.js"></script> <!-- 실제 앱 스크립트 -->
+</body>
+</html>

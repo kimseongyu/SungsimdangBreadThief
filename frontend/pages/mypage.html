@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>마이페이지 - 유성 시장 제휴 맺기</title>
+    <link rel="stylesheet" href="../styles/mypage.css">
+</head>
+<body>
+    <header>
+        <div class="navbar">
+            <div class="logo">유성 시장 제휴 맺기</div>
+            <div id="user-actions" class="user-info">
+                <button class="logout-btn">로그아웃</button>
+                <button class="home-btn">홈 페이지로</button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="matching-section">
+            <h2>현재 매칭된 상인</h2>
+            <table class="matching-table">
+                <thead>
+                    <tr>
+                        <th>업체명</th>
+                        <th>위치</th>
+                        <th>카테고리</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="matched-companies-list">
+                    <!-- 매칭된 상인 리스트가 여기에 렌더링 됩니다. -->
+                </tbody>
+            </table>
+        </section>
+
+        <section class="request-section">
+            <h2>나에게 온 매칭</h2>
+            <table class="matching-table">
+                <thead>
+                    <tr>
+                        <th>업체명</th>
+                        <th>위치</th>
+                        <th>카테고리</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="incoming-requests-list">
+                    <!-- 나에게 온 매칭 리스트가 여기에 렌더링 됩니다. -->
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <script src="../js/mypage.js"></script>
+</body>
+</html>

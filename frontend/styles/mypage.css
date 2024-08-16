@@ -1,0 +1,103 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    margin: 0%;
+    padding: 0.0;
+}
+
+.navbar {
+    background-color: #fff;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+}
+
+
+
+.user-info {
+    margin-left: auto;
+}
+
+button {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+button.logout-btn {
+    background-color: #dc3545;
+    color: white;
+}
+
+button.mypage-btn {
+    background-color: #007bff;
+    color: white;
+}
+
+button.logout-btn:hover {
+    background-color: #c82333;
+}
+
+button.mypage-btn:hover {
+    background-color: #0056b3;
+}
+
+.main {
+    margin: 2rem auto;
+    max-width: 1200px;
+    padding: 1rem;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.matching-section {
+    margin: 10%;
+}
+
+.request-section {
+    margin: 10%;
+}
+
+.matching-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 2rem;
+}
+
+.matching-table th, .matching-table td {
+    border: 1px solid #ddd;
+    padding: 1rem;
+    text-align: left;
+}
+
+button.accept-btn {
+    background-color: #28a745;
+    color: white;
+}
+
+button.delete-btn {
+    background-color: #dc3545;
+    color: white;
+}
+
+button.accept-btn:hover {
+    background-color: #218838;
+}
+
+button.delete-btn:hover {
+    background-color: #c82333;
+}
+

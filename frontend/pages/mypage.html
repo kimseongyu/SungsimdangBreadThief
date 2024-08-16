@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,25 +19,8 @@
     </header>
 
     <main>
-        <section class="matching-section">
-            <h2>현재 매칭된 상인</h2>
-            <table class="matching-table">
-                <thead>
-                    <tr>
-                        <th>업체명</th>
-                        <th>위치</th>
-                        <th>카테고리</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody id="matched-companies-list">
-                    <!-- 매칭된 상인 리스트가 여기에 렌더링 됩니다. -->
-                </tbody>
-            </table>
-        </section>
-
         <section class="request-section">
-            <h2>나에게 온 매칭</h2>
+            <h2>나에게 온 제휴 요청들</h2>
             <table class="matching-table">
                 <thead>
                     <tr>
@@ -48,6 +32,23 @@
                 </thead>
                 <tbody id="incoming-requests-list">
                     <!-- 나에게 온 매칭 리스트가 여기에 렌더링 됩니다. -->
+                </tbody>
+            </table>
+        </section>
+
+        <section class="matching-section">
+            <h2>현재 제휴 매칭된 상인</h2>
+            <table class="matching-table">
+                <thead>
+                    <tr>
+                        <th>업체명</th>
+                        <th>위치</th>
+                        <th>카테고리</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="matched-companies-list">
+                    <!-- 매칭된 상인 리스트가 여기에 렌더링 됩니다. -->
                 </tbody>
             </table>
         </section>

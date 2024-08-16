@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>유성 시장 제휴 맺기</title>
+    <link rel="stylesheet" href="../styles/main.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <header>
+        <div class="navbar">
+            <div class="logo">유성 시장 제휴 맺기</div>
+            <input type="text" placeholder="어떤 업체를 찾으세요?" class="search-bar">
+            <!-- 로그인 전 버튼들 -->
+            <div id="guest-actions" class="auth-buttons">
+                <button class="login-btn">로그인</button>
+                <button class="signup-btn">회원가입</button>
+            </div>
+            <!-- 로그인 후 버튼들 -->
+            <div id="user-actions" class="user-info" style="display: none;">
+                <span id="user-greeting"></span>
+                <button class="logout-btn">로그아웃</button>
+                <button class="mypage-btn">마이페이지</button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- 제휴 신청 폼 팝업 -->
+        <div id="applyModal" class="modal">
+            <div class="modal-content">
+                <span class="close-btn">&times;</span>
+                <h2>제휴 신청하기</h2>
+                <form id="applyForm">
+                    <label for="pr">PR 메시지:</label><br>
+                    <textarea id="pr" name="pr" required></textarea><br><br>
+                    <label for="comment">코멘트:</label><br>
+                    <textarea id="comment" name="comment" required></textarea><br><br>
+                    <button type="submit">제출하기</button>
+                </form>
+            </div>
+        </div>
+
+        <section class="registration-section">
+            <h2>제휴 등록 업체</h2>
+            <button class="register-btn">나도 제휴 등록하기</button>
+            <table class="company-table">
+                <thead>
+                    <tr>
+                        <th>업체명</th>
+                        <th>위치</th>
+                        <th>카테고리</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="company-list">
+                    <!-- 회사 리스트가 여기에 렌더링 됩니다. -->
+                </tbody>
+            </table>
+        </section>
+    </main>
+    
+    <script src="../js/main.js"></script>
+</body>
+</html>

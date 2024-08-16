@@ -1,42 +1,42 @@
 document.addEventListener('DOMContentLoaded', () => {
     const user = JSON.parse(localStorage.getItem('user'));
 
-    const guestActions = document.getElementById('guest-actions');
-    const userActions = document.getElementById('user-actions');
-    const userGreeting = document.getElementById('user-greeting');
-    const registerBtn = document.querySelector('.register-btn');
+    const guestActions = $('#guest-actions');
+    const userActions = $('#user-actions');
+    const userGreeting = $('#user-greeting');
+    const registerBtn = $('.register-btn');
 
     if (user) {
-        guestActions.style.display = 'none';
-        userActions.style.display = 'flex';
-        userGreeting.textContent = `환영합니다, ${user.email}님`;
+        guestActions.hide();
+        userActions.show();
+        userGreeting.text(`환영합니다, ${user.email}님`);
 
-        registerBtn.addEventListener('click', () => {
+        registerBtn.on('click', () => {
             window.location.href = './registration-page.html';
         });
 
-        document.querySelector('.logout-btn').addEventListener('click', () => {
+        $('.logout-btn').on('click', () => {
             localStorage.removeItem('user');
             window.location.href = './main.html';
         });
 
-        document.querySelector('.mypage-btn').addEventListener('click', () => {
+        $('.mypage-btn').on('click', () => {
             window.location.href = './mypage.html';
         });
     } else {
-        guestActions.style.display = 'flex';
-        userActions.style.display = 'none';
+        guestActions.show();
+        userActions.hide();
 
-        registerBtn.addEventListener('click', () => {
+        registerBtn.on('click', () => {
             alert('로그인이 필요합니다.');
             window.location.href = './login.html';
         });
 
-        document.querySelector('.login-btn').addEventListener('click', () => {
+        $('.login-btn').on('click', () => {
             window.location.href = './login.html';
         });
 
-        document.querySelector('.signup-btn').addEventListener('click', () => {
+        $('.signup-btn').on('click', () => {
             window.location.href = './sign-up.html';
         });
     }
@@ -45,106 +45,154 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function renderCompanies() {
-    // 서버로부터 제휴 등록된 업체 리스트를 가져옴
-    axios.get('http://localhost:3000/partners/affiliate/list')
-        .then(response => {
-            const companyList = response.data.data;
-            const companyListElement = document.getElementById('company-list');
-            
+    // 서버로부터 제휴 등록된 업체 리스트를 가져옴 (AJAX 호출)
+    $.ajax({
+        url: 'http://localhost:3000/partners/affiliate/list',
+        method: 'GET',
+        success: function(response) {
+            const companyList = response.data;
+            const companyListElement = $('#company-list');
+
             // 기존 리스트 초기화
-            companyListElement.innerHTML = '';
+            companyListElement.empty();
+
+            // 테이블 헤더 추가
+            //companyListElement.append('<tr><th>업체명</th><th>위치</th><th>카테고리</th><th>작업</th></tr>');
 
             // 업체 리스트를 테이블에 추가
             companyList.forEach(company => {
-                const row = document.createElement('tr');
+                const row = $('<tr>');
+                row.append(`<td>${company.name}</td>`);
+                row.append(`<td>${company.loc}</td>`);
+                row.append(`<td>${company.category}</td>`);
 
-                const nameCell = document.createElement('td');
-                nameCell.textContent = company.name;
-                row.appendChild(nameCell);
+                const actionCell = $('<td>');
 
-                const locCell = document.createElement('td');
-                locCell.textContent = company.loc;
-                row.appendChild(locCell);
-
-                const categoryCell = document.createElement('td');
-                categoryCell.textContent = company.category;
-                row.appendChild(categoryCell);
-
-                const actionCell = document.createElement('td');
-                
                 // 제휴 신청 버튼
-                const applyButton = document.createElement('button');
-                applyButton.textContent = '제휴 신청하기';
-                applyButton.classList.add('apply-btn');
-                applyButton.addEventListener('click', () => {
-                    // 제휴 신청 페이지로 이동
-                    window.location.href = './partner-register.html';
-                });
-                actionCell.appendChild(applyButton);
-                
-                // 등록 삭제 버튼
-                const deleteButton = document.createElement('button');
-                deleteButton.textContent = '등록 삭제하기';
-                deleteButton.classList.add('delete-btn');
-                deleteButton.addEventListener('click', () => {
-                    const confirmDelete = confirm("정말로 등록을 삭제하시겠습니까?");
-                    if (confirmDelete) {
-                        // 서버에 삭제 요청을 보낼 수 있음
-                        // 여기서는 예시로 삭제 작업 후 메인 페이지로 리다이렉트
-                        axios.post('http://localhost:3000/partners/delete', { email: company.email })
-                            .then(() => {
-                                alert('등록이 삭제되었습니다.');
-                                renderCompanies(); // 테이블 업데이트
-                            })
-                            .catch(error => {
-                                console.error('등록 삭제 중 오류가 발생했습니다.', error);
-                                alert('등록 삭제에 실패했습니다.');
-                            });
+                const applyButton = $('<button>').text('제휴 신청하기').addClass('apply-btn');
+                applyButton.on('click', () => {
+                    if (user) {
+                        openApplyModal(company); // 로그인 상태일 때 팝업 열기
+                    } else {
+                        alert('로그인이 필요합니다.');
                     }
                 });
-                actionCell.appendChild(deleteButton);
+                actionCell.append(applyButton);
 
-                row.appendChild(actionCell);
+                // 등록 삭제 버튼
+                const deleteButton = $('<button>').text('등록 삭제하기').addClass('delete-btn');
+                deleteButton.on('click', () => {
+                    if (user) {
+                        const confirmDelete = confirm("정말로 등록을 삭제하시겠습니까?");
+                        if (confirmDelete) {
+                            deleteCompany(company.email);
+                        }
+                    } else {
+                        alert('로그인이 필요합니다.');
+                    }
+                });
+                actionCell.append(deleteButton);
 
-                companyListElement.appendChild(row);
+                row.append(actionCell);
+                companyListElement.append(row);
             });
-        })
-        .catch(error => {
+        },
+        error: function(error) {
             console.error('업체 리스트를 불러오는데 실패했습니다.', error);
             alert('업체 리스트를 불러오는데 문제가 발생했습니다.');
-        });
-}
-
-
-
-// "제휴 신청하기" 버튼 클릭 시 partner-register.html로 이동
-document.querySelectorAll('.apply-btn').forEach(button => {
-    button.addEventListener('click', () => {
-        redirectTo('../pages/partner-register.html');
-    });
-});
-
-// "등록 삭제하기" 버튼 클릭 시 경고 메시지를 띄우고, 사용자가 확인하면 해당 페이지로 이동
-document.querySelectorAll('.delete-btn').forEach(button => {
-    button.addEventListener('click', () => {
-        const confirmDelete = confirm("정말로 등록을 삭제하시겠습니까?");
-        if (confirmDelete) {
-            redirectTo('../pages/main.html');  // 삭제 후 메인 페이지로 리다이렉트
         }
     });
+}
+
+function deleteCompany(email) {
+    $.ajax({
+        url: 'http://localhost:3000/partners/delete',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ email }),
+        success: function() {
+            alert('등록이 삭제되었습니다.');
+            renderCompanies(); // 테이블 업데이트
+        },
+        error: function(error) {
+            console.error('등록 삭제 중 오류가 발생했습니다.', error);
+            alert('등록 삭제에 실패했습니다.');
+        }
+    });
+}
+
+function openApplyModal(company) {
+    const modal = $('#applyModal');
+    const form = $('#applyForm');
+
+    // 모달 열기
+    modal.show();
+
+    // 로그인된 유저의 이메일 가져오기
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (!user) {
+        alert('로그인이 필요합니다.');
+        modal.hide();
+        return;
+    }
+
+    // 폼 제출 처리
+    form.off('submit').on('submit', function(event) {
+        event.preventDefault(); // 폼 기본 동작 막기
+        const prMessage = $('#pr').val(); // PR 메시지 필드
+        const commentMessage = $('#comment').val(); // 한 줄 평 필드
+
+        // AJAX 요청으로 제휴 신청 보내기
+        $.ajax({
+            url: 'http://localhost:3000/partners/apply',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                transmit: user.email,        // 로그인된 유저 이메일
+                receive: company.email,      // 매칭받고 싶은 업체의 이메일
+                pr: prMessage,               // PR 메시지
+                comment: commentMessage      // 한 줄 평
+            }),
+            success: function(response) {
+                if (response.ok) {
+                    alert('제휴 신청이 완료되었습니다.');
+                } else {
+                    alert('제휴 신청에 실패했습니다: ' + response.msg);
+                }
+                modal.hide(); // 모달 닫기
+            },
+            error: function(error) {
+                console.error('제휴 신청 중 오류가 발생했습니다.', error);
+                alert('제휴 신청에 실패했습니다.');
+                modal.hide();
+            }
+        });
+    });
+
+    // 모달 닫기 버튼
+    $('.close-btn').on('click', () => {
+        modal.hide();
+    });
+}
+
+// 모달 외부를 클릭해도 모달 닫기
+$(window).on('click', function(event) {
+    const modal = $('#applyModal');
+    if (event.target === modal[0]) {
+        modal.hide();
+    }
 });
 
-// 로그인 버튼 클릭 시 login.html로 이동
-document.querySelector('.login-btn').addEventListener('click', () => {
-    redirectTo('../pages/login.html');
+
+// 버튼 이벤트 핸들러
+$('.login-btn').on('click', () => {
+    window.location.href = './login.html';
 });
 
-// 회원 가입 버튼 클릭 시 signup.html로 이동
-document.querySelector('.signup-btn').addEventListener('click', () => {
-    redirectTo('../pages/sign-up.html');
+$('.signup-btn').on('click', () => {
+    window.location.href = './sign-up.html';
 });
 
-// "나도 제휴 등록하기" 버튼 클릭 시 partner-register.html로 이동
-document.querySelector('.register-btn').addEventListener('click', () => {
-    redirectTo('../pages/registration-page.html');
+$('.register-btn').on('click', () => {
+    window.location.href = './registration-page.html';
 });

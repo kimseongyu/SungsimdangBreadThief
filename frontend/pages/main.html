@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>유성 시장 제휴 맺기</title>
     <link rel="stylesheet" href="../styles/main.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <header>
@@ -26,6 +27,21 @@
     </header>
 
     <main>
+        <!-- 제휴 신청 폼 팝업 -->
+        <div id="applyModal" class="modal">
+            <div class="modal-content">
+                <span class="close-btn">&times;</span>
+                <h2>제휴 신청하기</h2>
+                <form id="applyForm">
+                    <label for="pr">PR 메시지:</label><br>
+                    <textarea id="pr" name="pr" required></textarea><br><br>
+                    <label for="comment">코멘트:</label><br>
+                    <textarea id="comment" name="comment" required></textarea><br><br>
+                    <button type="submit">제출하기</button>
+                </form>
+            </div>
+        </div>
+
         <section class="registration-section">
             <h2>제휴 등록 업체</h2>
             <button class="register-btn">나도 제휴 등록하기</button>
@@ -44,7 +60,7 @@
             </table>
         </section>
     </main>
-
+    
     <script src="../js/main.js"></script>
 </body>
 </html>

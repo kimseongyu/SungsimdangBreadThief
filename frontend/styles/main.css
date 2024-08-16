@@ -160,3 +160,32 @@ main {
     font-size: 0.9rem;
     transition: background-color 0.3s;
 }
+
+.apply-btn {
+    margin-right: 10px; /* 오른쪽에 10px 간격 추가 */
+}
+.delete-btn {
+    margin-left: 10px; /* 왼쪽에 10px 간격 추가 */
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+.modal-content {
+    background-color: white;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 30%;
+}
+.close-btn {
+    float: right;
+    cursor: pointer;
+}

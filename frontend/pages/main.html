@@ -31,13 +31,22 @@
         <div id="applyModal" class="modal">
             <div class="modal-content">
                 <span class="close-btn">&times;</span>
-                <h2>제휴 신청하기</h2>
+                <h2>OOO에게 제휴 신청하기</h2>
                 <form id="applyForm">
-                    <label for="pr">PR 메시지:</label><br>
-                    <textarea id="pr" name="pr" required></textarea><br><br>
-                    <label for="comment">코멘트:</label><br>
-                    <textarea id="comment" name="comment" required></textarea><br><br>
-                    <button type="submit">제출하기</button>
+                    <div class="input-group">
+                        <label for="pr">PR 메시지:</label>
+                        <textarea id="pr" rows="4"></textarea>
+                    </div>
+                    <div class="input-group">
+                        <label for="comment">코멘트:</label>
+                        <textarea id="comment" rows="2"></textarea>
+                    </div>
+                    <!-- 안내 문구 추가 -->
+                    <p class="disclaimer">
+                        버튼을 누르면 대상 업체에게 제휴 신청 메일이 갑니다.<br>
+                        동의하시면 제출하기를 눌러주세요.
+                    </p>
+                    <button type="submit" class="submit-btn">제출하기</button>
                 </form>
             </div>
         </div>
@@ -60,7 +69,7 @@
             </table>
         </section>
     </main>
-    
+    <script src="../config.js"></script>
     <script src="../js/main.js"></script>
 </body>
 </html>

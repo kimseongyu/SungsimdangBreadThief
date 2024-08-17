@@ -55,3 +55,20 @@ button {
 button:hover {
     background-color: #218838;
 }
+
+
+/* 추가된 스타일 */
+.signup-link {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+.signup-link a {
+    text-decoration: none;
+    color: #6f42c1;
+}
+
+.signup-link a:hover {
+    text-decoration: underline;
+}

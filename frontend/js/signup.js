@@ -1,3 +1,5 @@
+const apiUrl = config.apiUrl;
+
 $(document).ready(function() {
     const $signupForm = $('#signup-form');
 
@@ -14,7 +16,7 @@ $(document).ready(function() {
 
             // 백엔드 서버로 POST 요청 보내기 (localhost:3000)
             $.ajax({
-                url: 'http://localhost:3000/user/signup',
+                url: `${apiUrl}/user/signup`,
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({ email, password, name, company, location, category }),

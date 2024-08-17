@@ -1,3 +1,5 @@
+const apiUrl = config.apiUrl;
+
 document.addEventListener('DOMContentLoaded', () => {
     const user = JSON.parse(localStorage.getItem('user'));
 
@@ -45,9 +47,10 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function renderCompanies() {
+    const user = JSON.parse(localStorage.getItem('user'));
     // 서버로부터 제휴 등록된 업체 리스트를 가져옴 (AJAX 호출)
     $.ajax({
-        url: 'http://localhost:3000/partners/affiliate/list',
+        url: `${apiUrl}/partners/affiliate/list`,
         method: 'GET',
         success: function(response) {
             const companyList = response.data;
@@ -62,6 +65,12 @@ function renderCompanies() {
             // 업체 리스트를 테이블에 추가
             companyList.forEach(company => {
                 const row = $('<tr>');
+                // 각 행에 클릭 이벤트 추가
+                row.on('click', () => {
+                    localStorage.setItem('selectedCompany', JSON.stringify(company));
+                    window.location.href = './details-page.html';
+                });
+
                 row.append(`<td>${company.name}</td>`);
                 row.append(`<td>${company.loc}</td>`);
                 row.append(`<td>${company.category}</td>`);
@@ -70,7 +79,9 @@ function renderCompanies() {
 
                 // 제휴 신청 버튼
                 const applyButton = $('<button>').text('제휴 신청하기').addClass('apply-btn');
-                applyButton.on('click', () => {
+                
+                applyButton.on('click', (event) => {
+                    event.stopPropagation(); // 행 클릭 이벤트를 막음
                     if (user) {
                         openApplyModal(company); // 로그인 상태일 때 팝업 열기
                     } else {
@@ -83,9 +94,14 @@ function renderCompanies() {
                 const deleteButton = $('<button>').text('등록 삭제하기').addClass('delete-btn');
                 deleteButton.on('click', () => {
                     if (user) {
-                        const confirmDelete = confirm("정말로 등록을 삭제하시겠습니까?");
-                        if (confirmDelete) {
-                            deleteCompany(company.email);
+                        // 업체 이메일과 로그인한 유저 이메일 비교
+                        if (user.email === company.email) {
+                            const confirmDelete = confirm("정말로 등록을 삭제하시겠습니까?");
+                            if (confirmDelete) {
+                                deleteCompany(company.email);
+                            }
+                        } else {
+                            alert("삭제하실 수 없습니다.");
                         }
                     } else {
                         alert('로그인이 필요합니다.');
@@ -105,8 +121,9 @@ function renderCompanies() {
 }
 
 function deleteCompany(email) {
+    const user = JSON.parse(localStorage.getItem('user'));
     $.ajax({
-        url: 'http://localhost:3000/partners/delete',
+        url: `${apiUrl}/partners/delete`,
         method: 'POST',
         contentType: 'application/json',
         data: JSON.stringify({ email }),
@@ -124,6 +141,9 @@ function deleteCompany(email) {
 function openApplyModal(company) {
     const modal = $('#applyModal');
     const form = $('#applyForm');
+
+    // 모달의 제목을 "{업체명}에게"로 변경
+    modal.find('h2').text(`${company.name}에게 제휴 신청하기`);
 
     // 모달 열기
     modal.show();
@@ -144,7 +164,7 @@ function openApplyModal(company) {
 
         // AJAX 요청으로 제휴 신청 보내기
         $.ajax({
-            url: 'http://localhost:3000/partners/apply',
+            url: `${apiUrl}/partners/apply`,
             method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({
@@ -178,11 +198,13 @@ function openApplyModal(company) {
 // 모달 외부를 클릭해도 모달 닫기
 $(window).on('click', function(event) {
     const modal = $('#applyModal');
-    if (event.target === modal[0]) {
+    const modalContent = $('.modal-content'); // 모달 내부 콘텐츠의 클래스나 ID로 선택
+
+    // 클릭한 대상이 모달 콘텐츠가 아니라면 모달 닫기
+    if (!modalContent.is(event.target) && modalContent.has(event.target).length === 0) {
         modal.hide();
     }
 });
-
 
 // 버튼 이벤트 핸들러
 $('.login-btn').on('click', () => {

@@ -1,6 +1,7 @@
+const apiUrl = config.apiUrl;
+
 $(document).ready(function() {
-    // user 변수를 전역에서 정의
-    const user = JSON.parse(localStorage.getItem('user'));
+    const user = JSON.parse(localStorage.getItem('user')); 
 
     // 만약 user 정보가 없으면 로그인 페이지로 리디렉션
     if (!user) {
@@ -16,36 +17,49 @@ $(document).ready(function() {
     });
 
     // 초기 렌더링 함수 호출
-    renderMatchedCompanies();
-    renderIncomingRequests(user);  // 여기서 user 변수가 존재해야 함
+    renderAppliedCompanies(user);  // 내가 제휴 신청한 리스트 보기
+    renderIncomingRequests(user);  // 나에게 요청한 업체 리스트 보기
 });
+
 
 let matchedCompanies = [
     { name: '업체1', location: '서울', category: 'IT' },
 ];
 
-function renderMatchedCompanies() {
-    const $matchedCompaniesList = $('#matched-companies-list');
-    $matchedCompaniesList.empty(); // 기존 리스트 초기화
+// 내가 신청한 제휴 리스트 보기
+function renderAppliedCompanies(user) {
+    const $appliedCompaniesList = $('#applied-companies-list');
+    $appliedCompaniesList.empty(); // 기존 리스트 초기화
 
-    matchedCompanies.forEach(company => {
-        const $row = $('<tr>');
+    // 서버에서 내가 신청한 제휴 리스트 가져오기
+    $.ajax({
+        url: `${apiUrl}/partners/apply/list`,
+        type: 'GET',
+        contentType: 'application/json',
+        data: { email: user.email },  // 자신의 이메일을 사용하여 신청한 리스트 가져오기
+        success: function(response) {
+            if (response.ok) {
+                const appliedCompanies = response.data;
 
-        $row.html(`
-            <td>${company.name}</td>
-            <td>${company.location}</td>
-            <td>${company.category}</td>
-            <td><button class="delete-btn">등록 삭제하기</button></td>
-        `);
+                appliedCompanies.forEach(company => {
+                    const $row = $('<tr>');
 
-        $row.find('.delete-btn').on('click', () => {
-            alert(`${company.name}의 매칭이 삭제되었습니다.`);
-            // 매칭 삭제 로직 추가
-            matchedCompanies = matchedCompanies.filter(c => c.name !== company.name);
-            renderMatchedCompanies(); // 삭제 후 리스트 새로고침
-        });
-
-        $matchedCompaniesList.append($row);
+                    $row.html(`
+                        <td>${company.name}</td>
+                        <td>${company.email}</td>
+                        <td>${company.location}</td>
+                        <td>${company.category}</td>
+                    `);
+                    $appliedCompaniesList.append($row);
+                });
+            } else {
+                alert('데이터를 가져오지 못했습니다.');
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('리스트 요청 실패:', error);
+            alert('리스트를 가져오는 데 실패했습니다. 다시 시도해주세요.');
+        }
     });
 }
 
@@ -56,7 +70,7 @@ function renderIncomingRequests(user) {
 
     // 서버에서 나와 매칭을 원하는 업체 리스트 가져오기
     $.ajax({
-        url: 'http://localhost:3000/partners/list',
+        url: `${apiUrl}/partners/list`,
         type: 'GET',
         contentType: 'application/json',
         data: { email: user.email, keyword: '' }, 
@@ -100,7 +114,7 @@ function renderIncomingRequests(user) {
 
 function handleRequestResponse(receiveEmail, transmitEmail, isAccepted, company = null) {
     $.ajax({
-        url: 'http://localhost:3000/partners/response',
+        url: `${apiUrl}/partners/response`,
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify({
@@ -109,19 +123,17 @@ function handleRequestResponse(receiveEmail, transmitEmail, isAccepted, company 
             accept: isAccepted
         }),
         success: function(response) {
+            // 응답의 데이터가 유효한지 확인
             if (response.ok) {
-                if (isAccepted && company) {
+                if (isAccepted && company && company.name) {
+                    // company 객체가 유효하고, name 속성이 있을 때만 접근
                     alert(`${company.name}의 요청을 수락했습니다.`);
-                    matchedCompanies.push({
-                        name: company.name,
-                        location: company.loc,
-                        category: company.category
-                    });
-                    renderMatchedCompanies(); // 성공 시 리스트 새로고침
-                } else {
+                    renderIncomingRequests({ email: receiveEmail }); // 성공 시 리스트 새로고침
+                } else if (!isAccepted && company && company.name) {
                     alert(`${company.name}의 요청을 거절했습니다.`);
+                } else {
+                    alert('요청 처리 중 문제가 발생했습니다.');
                 }
-                renderIncomingRequests(user); // 성공 시 리스트 새로고침
             } else {
                 alert(response.msg);
             }
@@ -132,6 +144,7 @@ function handleRequestResponse(receiveEmail, transmitEmail, isAccepted, company 
         }
     });
 }
+
 
 
 function redirectTo(url) {
